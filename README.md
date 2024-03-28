@@ -1,5 +1,37 @@
 ## Celo CLI (Cheat Sheet)
 
+### Make ERC20 transfer with gas currency
+
+You can see USDC as an EasyFee is live on mainnet using the latest `@celo/celocli` release (v5.0.0):
+
+```sh
+# Install latest celocli
+$ yarn global add @celo/celocli@5.0.0
+
+# Check fee currencies on mainnet
+$ celocli network:whitelist --node mainnet
+
+Available currencies:
+0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B - USDC (USDC) (adapted token: 0xcebA9300f2b948710d2653dD7B07f33A8B32118C)
+0x73F93dcc49cB8A239e2032663e9475dd5ef29A08 - ECO CFA (eXOF)
+0x765DE816845861e75A25fCA122bb6898B8B1282a - Celo Dollar (cUSD)
+0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73 - Celo Euro (cEUR)
+0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787 - Celo Brazilian Real (cREAL)
+```
+
+Send 0.01 USDC using USDC as gas currency on alfajores
+
+```sh
+$ celocli transfer:erc20 --erc20Address 0x2F25deB3848C207fc8E0c34035B3Ba7fC157602B --from 0x303C22e6ef01CbA9d03259248863836CB91336D5 --to 0x5111A8caCa3366389EeaAad8a49027d573588BbB --value 0.01e6 --privateKey $PRIVATE_KEY --node alfajores --gasCurrency=0x4822e58de6f5e485eF90df51C41CE01721331dC0
+
+[...]
+
+All checks passed
+SendTransaction: transfer
+txHash: 0xc83512dc9dbfa9bc29f7467e2cced13f7dda547fc13525fe3d123455dfb32f37
+Sending Transaction: transfer... done
+```
+
 ## Get core contract addresses
 
 ```sh
@@ -33,6 +65,18 @@ $ celocli network:contracts --node alfajores --columns "Contract","Proxy","Imple
  StableTokenEUR          0x10c892A6EC43a53E45D0B916B4b7D383B1b78C0F 0x3Bd899048f4f6951fFeB5474205B79FDB09D6212 
  UniswapFeeHandlerSeller 0xc7b6E77C3702666DDa8EB5b7F30234B020788b21 0x1365f75d7087D997F504f56f2CA60418d9970163 
  Validators              0x9acF2A99914E083aD0d610672E93d14b0736BBCc 0xF17D8624e0c3402D02b6F8D5870Fff0Dd35e4f0B
+```
+
+### Get network parameters
+
+```sh
+$ celocli network:parameters --node alfajores
+#... 
+EpochRewards:
+  carbonOffsetting:
+    factor: 0.25
+    partner: 0x22579CA45eE22E2E16dDF72D955D6cf4c767B0eF
+#...
 ```
 
 ## Use
