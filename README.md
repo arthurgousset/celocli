@@ -115,7 +115,7 @@ $ celocli --help
 
 ### Autocomplete feature (very useful!)
 
-Run `celocli autocomplete` for instructions (see [here](https://docs.celo.org/command-line-interface/autocomplete) for the command docs). (thanks @Eela Nagaraj 👩‍💻 )
+Run `celocli autocomplete` for instructions (see [here](https://docs.celo.org/command-line-interface/autocomplete) for the command docs).
 
 ```bash
 $ celocli autocomplete
@@ -141,117 +141,100 @@ $ celocli command --<TAB>       # Flag completion
 Enjoy!
 ```
 
-### Get current-attestation-services
+## Test
 
-Fields:
-- Address 
-- Affiliation
-- Name
-- State
-- Version
-- Attestationserviceurl
-- Smsproviders
+Source: [github.com > [cli] Add multisig:approve
+#10693](https://github.com/celo-org/celo-monorepo/pull/10693#pullrequestreview-1720757356)
 
-Versions: 
+Steps to test `celocli multisig` on Alfajores.
 
-```bash
-celocli identity:current-attestation-services --node https://forno.celo.org --columns=Name,Version,State --sort=-Version --filter=State=Valid
+### Create a MultiSig on Alfajores using Celo Terminal
 
-Fetching currently elected Validators... done
-Name                     Version State 
-Figment Networks 1       1.5.0   Valid 
-Figment Networks 2       1.5.0   Valid 
-Figment Networks 3       1.5.0   Valid 
-Figment Networks 4       1.5.0   Valid 
-Tessellated Geometry     1.5.0   Valid 
-                         1.5.0   Valid 
-                         1.5.0   Valid 
-censusworks.0            1.5.0   Valid 
-censusworks.2            1.5.0   Valid 
+1.  Download [Celo Terminal](https://celoterminal.com/)
+2.  Run this in your CLI (this will start Celo Terminal on Alfajores, instead of Mainnet)
+
+```
+export CELOTERMINAL\_NETWORK\_ID=44787
+export CELOTERMINAL\_ACCOUNTS\_DB=home/.celoterminal/celoaccounts-test.db
+/Applications/Celo\\ Terminal.app/Contents/MacOS/Celo\\ Terminal
 ```
 
-Addresses:
+3.  Add 2 "standard accounts" (the multisig will need two owners for testing)
+4.  Create a Multisig ("Add account" > "Create a MultiSig account", set both accounts as owners)
 
-```bash
-celocli identity:current-attestation-services --node https://forno.celo.org --columns=Name,Version,Address,State --sort=-Version --filter=State=Valid
+[![image](https://user-images.githubusercontent.com/46296830/281396517-7890c21b-5fc3-4bba-90e1-9bd9e18e9c2a.png)](https://user-images.githubusercontent.com/46296830/281396517-7890c21b-5fc3-4bba-90e1-9bd9e18e9c2a.png)
 
-Fetching currently elected Validators... done
-Name                     Version Address                                    State 
-Figment Networks 1       1.5.0   0x0e47ea88480788289bDa37D8Ae0C2CD680623cfA Valid 
-Figment Networks 2       1.5.0   0x90b056B00952d71bC7866c067b49f5b062098ac9 Valid 
-Figment Networks 3       1.5.0   0xDdc60B465c204Aa7358cE4f009D2dBC65af5C4B4 Valid 
-Figment Networks 4       1.5.0   0x12125D1b7f01F32b3A741A6b97CB46f714f273aA Valid 
-Tessellated Geometry     1.5.0   0x44a7Af700ACa1B24ECdB818dF4D202772D606Cb4 Valid 
-                         1.5.0   0xFEA3a9f2b28E9EeA5EB14bE130c7C79459B2AA5e Valid 
+5.  Faucet your new MultiSig ([faucet.celo.org](https://faucet.celo.org/))
+
+### Make a test transfer from the MultiSig
+
+6.  Make a test transfer from the MultiSig (to anywhere, e.g. one of your standard accounts)
+
+[![image](https://user-images.githubusercontent.com/46296830/281396362-85627ff5-d17f-4162-bab8-7a695b0e4260.png)](https://user-images.githubusercontent.com/46296830/281396362-85627ff5-d17f-4162-bab8-7a695b0e4260.png)
+
+### Approve the MultiSig transfer from the CLI
+
+7.  Checkout branch
+
+```
+git checkout timmoreton/multisig-approve-cli
 ```
 
-## Attestation Service HTTP Endpoints
+8.  [Build branch](https://github.com/celo-org/celo-monorepo/blob/master/SETUP.md#building-celo-monorepo)
 
-Here is a list of HTTP endpoints each attestation service exposes: 
-- POST /attestations
-- POST /test_attestations
-- GET /get_attestations
-- POST /delivery_status_nexmo [v1.5.0+]
-- POST /delivery_status_twilioverify [v1.5.0+]
-- POST /delivery_status_twiliomessaging [pre-v1.5.0]
-- POST /delivery_status_twilio [v1.2.0+]
-- GET /delivery_status_messagebird [not POST]
-- GET /status 
-- GET /healthz [optional]
-- GET /metrics [optional]
-
-Source: [Celo docs > attestation-service > deployment-architecture](attestation-service#deployment-architecture)
-
-This is how to find the attestation service URL: 
-
-```bash
-celocli identity:current-attestation-services --node https://forno.celo.org --columns=Name,State,Attestationserviceurl --sort=-Version
-
-Name                                                      State                         Attestationserviceurl                                  
-cnstnt.xyz/rc1/validator-1                                NoAttestationSigner           null                                                   
-cnstnt.xyz/rc1/validator-2                                NoAttestationSigner           null                                                   
-cnstnt.xyz/rc1/validator-3                                NoAttestationSigner           null                                                   
-Nodito Labs 1                                             UnreachableAttestationService https://celo-attestation-1.noditolabs.com:3000         
-                                                          MetadataTimeout               null                                                   
-                                                          MetadataTimeout               null                                                   
-                                                          MetadataTimeout               null                                                   
-                                                          MetadataTimeout               null                                                   
-                                                          MetadataTimeout               null                                                   
-SeedBed                                                   NoAttestationSigner           null                                                   
-Binance-Staking                                           NoAttestationSigner           null                                                   
-Binance-Staking-2                                         NoAttestationSigner           null                                                   
-T-Systems MMS 4 delegation from business only Validator 1 NoAttestationSigner           null                                                   
-T-Systems MMS 4 delegation from business only Validator 2 NoAttestationSigner           null                                                   
-T-Systems MMS 4 delegation from business only Validator 3 NoAttestationSigner           null                                                   
-T-Systems MMS 4 delegation from business only Validator 4 NoAttestationSigner           null                                                   
-T-Systems MMS 4 delegation from business only Validator 5 NoAttestationSigner           null                                                   
-Figment Networks 1                                        Valid                         https://attestations-01.celo.figment.network           
-Figment Networks 2                                        Valid                         https://attestations-008.celo.figment.network          
-Figment Networks 3                                        Valid                         https://attestations-009.celo.figment.network          
-Figment Networks 4                                        Valid                         https://attestations-02.celo.figment.network    
+```
+yarn
+yarn build --ignore docs
 ```
 
-Here is an example JSON payload for the /status HTTP endpoint (https://attestations-008.celo.figment.network/status)
+9.  Navigate to locally built CLI package
 
-```json
-{
-  "status": "ok",
-  "smsProviders": [
-    "messagebird",
-    "twilioverify",
-    "twiliomessaging",
-    "nexmo"
-  ],
-  "blacklistedRegionCodes": [],
-  "accountAddress": "0x90b056B00952d71bC7866c067b49f5b062098ac9",
-  "version": "1.5.0",
-  "latestBlock": 12561402,
-  "ageOfLatestBlock": 4.062000036239624,
-  "isNodeSyncing": false,
-  "appSignature": "x",
-  "smsProvidersRandomized": false,
-  "maxDeliveryAttempts": 3,
-  "maxRerequestMins": 1440,
-  "twilioVerifySidProvided": true
-}
 ```
+cd packages/cli
+```
+
+10.  [Set RPC node and network to Alfajores](https://docs.celo.org/cli#optional-run-a-full-node) (for testing)
+
+```
+bin/run config:set https://alfajores-forno.celo-testnet.org
+```
+
+11.  Check RPC node and network is set
+
+```
+bin/run config:get
+
+node: https://alfajores-forno.celo-testnet.org
+gasCurrency: auto
+```
+
+12.  Confirm the MultiSig transaction is queued (I'm using my test MultiSig created above)
+
+```
+bin/run multisig:show 0x37A6bA9CFC3C4C7f82bDf1Fe1B7cEb410E78738E
+
+Owners:
+  0: 0x303C22e6ef01CbA9d03259248863836CB91336D5
+  1: 0xEb08a36D153827CC750dd264c9e7360A3174Dc27
+Required confirmations: 2
+Required confirmations (internal): 2
+Transactions: 1
+```
+
+13.  Approve the transaction (I removed my private key from the command for obvious reasons)
+
+```
+bin/run multisig:approve --from 0xEb08a36D153827CC750dd264c9e7360A3174Dc27 --for 0x37A6bA9CFC3C4C7f82bDf1Fe1B7cEb410E78738E --tx 0 --privateKey <privateKey\>
+
+Running Checks:
+   ✔  The provided address is an owner of the multisig
+   ✔  0 is existing transaction
+All checks passed
+SendTransaction: approveTx
+txHash: 0xfe52b86eff92a715ffe158e0ea6d94274e5e083dcf2f40e8baca6a2c638b655e
+Sending Transaction: approveTx... done
+```
+
+14.  Confirm Multisig transfer worked using transaction hash above: <https://alfajores.celoscan.io/tx/0xfe52b86eff92a715ffe158e0ea6d94274e5e083dcf2f40e8baca6a2c638b655e>
+
+✅ Yes, MultiSig balance changed 5 CELO -> 4.5, and 0.5 CELO was transferred from MultiSig to chosen recipient.
