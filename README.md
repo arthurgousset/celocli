@@ -107,7 +107,7 @@ npm update -g @celo/celocli
 
 ### Options menu and help
 
-Use `--help` to see a range of options if you're stuck (thanks @Alec Schaefer 🙌  )
+Use `--help` to see a range of options if you're stuck
 
 ```bash
 $ celocli --help
