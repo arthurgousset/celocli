@@ -275,5 +275,17 @@ txHash: 0x44f9468e2b4181fbe5b4df4137d5376cd0a541b74917d0131a703ee4e023446b
 Sending Transaction: transfer... done
 ```
 
-The logic for sync checking is here:
-[`celo-org > developer-tooling > packages > cli > src > utils > helpers.ts`](https://github.com/celo-org/developer-tooling/blob/e7ac487358c30593cfef0497a7e67325a893ac14/packages/cli/src/utils/helpers.ts#L14-L15).
+This is also how unit tests for the `celocli` are written
+
+```ts
+process.env.NO_SYNCCHECK = "true";
+testWithGanache("account:authorize cmd", (web3: Web3) => {
+  // ...
+});
+```
+
+Source:
+[cli > src > commands > account > `authorize.test.ts`](https://github.com/celo-org/developer-tooling/blob/e7ac487358c30593cfef0497a7e67325a893ac14/packages/cli/src/commands/account/authorize.test.ts#L10-L12)
+
+For future refernce, the sync checking is done in this helper function:
+[celo-org > developer-tooling > packages > cli > src > utils > `helpers.ts`](https://github.com/celo-org/developer-tooling/blob/e7ac487358c30593cfef0497a7e67325a893ac14/packages/cli/src/utils/helpers.ts#L14-L15).
