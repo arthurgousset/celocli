@@ -141,10 +141,10 @@ $ celocli command --<TAB>       # Flag completion
 Enjoy!
 ```
 
-## Test
+## Test `MultiSig.sol` with local celocli build
 
-Source: [github.com > [cli] Add multisig:approve
-#10693](https://github.com/celo-org/celo-monorepo/pull/10693#pullrequestreview-1720757356)
+Source:
+[github.com > [cli] Add multisig:approve #10693](https://github.com/celo-org/celo-monorepo/pull/10693#pullrequestreview-1720757356)
 
 Steps to test `celocli multisig` on Alfajores.
 
@@ -237,4 +237,38 @@ Sending Transaction: approveTx... done
 
 14.  Confirm Multisig transfer worked using transaction hash above: <https://alfajores.celoscan.io/tx/0xfe52b86eff92a715ffe158e0ea6d94274e5e083dcf2f40e8baca6a2c638b655e>
 
-✅ Yes, MultiSig balance changed 5 CELO -> 4.5, and 0.5 CELO was transferred from MultiSig to chosen recipient.
+
+### Test local celocli build on a local anvil fork
+
+Source: ChatGPT
+
+Anvil is designed to simulate a live Ethereum network environment by forking from an existing state
+of the blockchain. However, when you fork a network, the forked state is essentially "frozen" at the
+block number from when the fork occurred. This means that without additional intervention, the node
+does not automatically sync with the ongoing changes in the original network. This is typically not
+an issue for tests or interactions that do not depend on subsequent blocks, but for operations that
+need ongoing network updates, this can cause problems.
+
+If you only need to bypass the sync checks temporarily to use certain `celocli` commands, you can
+disable the sync check. Setting the `NO_SYNCCHECK` environment variable will prevent `celocli` from
+failing due to the node appearing out of sync:
+
+```sh
+NO_SYNCCHECK=true yarn celocli transfer:celo \
+--from 0xf73d7f5A890a131f12E4fB03E50277c49748Cf5E \
+--to 0x2ee6F1cB802695F64D0A81284b36179f2886E7C2 \
+--value 1e18 \
+--privateKey $PRIVATE_KEY \
+--node http://127.0.0.1:8545/
+Running Checks:
+   ✔  Compliant Address
+   ✔  Compliant Address
+   ✔  Account has at least 1 CELO
+All checks passed
+SendTransaction: transfer
+txHash: 0x44f9468e2b4181fbe5b4df4137d5376cd0a541b74917d0131a703ee4e023446b
+Sending Transaction: transfer... done
+```
+
+The logic for sync checking is here:
+[`celo-org > developer-tooling > packages > cli > src > utils > helpers.ts`](https://github.com/celo-org/developer-tooling/blob/e7ac487358c30593cfef0497a7e67325a893ac14/packages/cli/src/utils/helpers.ts#L14-L15).
