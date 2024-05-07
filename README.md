@@ -154,10 +154,10 @@ Steps to test `celocli multisig` on Alfajores.
 1.  Download [Celo Terminal](https://celoterminal.com/)
 2.  Run this in your CLI (this will start Celo Terminal on Alfajores, instead of Mainnet)
 
-```
-export CELOTERMINAL\_NETWORK\_ID=44787
-export CELOTERMINAL\_ACCOUNTS\_DB=home/.celoterminal/celoaccounts-test.db
-/Applications/Celo\\ Terminal.app/Contents/MacOS/Celo\\ Terminal
+```sh
+export CELOTERMINAL_NETWORK_ID=44787
+export CELOTERMINAL_ACCOUNTS_DB=home/.celoterminal/celoaccounts-test.db
+/Applications/Celo\ Terminal.app/Contents/MacOS/Celo\ Terminal
 ```
 
 3.  Add 2 "standard accounts" (the multisig will need two owners for testing)
